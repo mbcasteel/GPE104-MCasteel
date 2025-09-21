@@ -18,7 +18,8 @@ public class Controller : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.S))
         {
-            pawn.MoveBackward();}
+            pawn.MoveBackward();
+        }
 
         if (Input.GetKey(KeyCode.A))
         {
