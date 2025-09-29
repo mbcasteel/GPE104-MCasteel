@@ -6,14 +6,16 @@ public class Meteor : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Triggered with " + other.name); // Debugging
-
         if (other.CompareTag("Player"))
         {
-            var health = other.GetComponent<Health>();
+            Health health = other.GetComponent<Health>();
+
             if (health != null)
             {
+                // Deal 1 damage (or instant death if flag is true)
                 health.TakeDamage(1, isInstantDeath);
+
+                // Meteor stays — do NOT destroy it here
             }
         }
     }
