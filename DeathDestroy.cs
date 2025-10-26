@@ -1,21 +1,10 @@
 using UnityEngine;
 
-public class DeathDestroy : MonoBehaviour
-
+public class DeathDestroy : Death
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Die()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    public void Die()
-    {         // Destroy the game object this script is attached to
+        // Destroy the game object that this component is on
         Destroy(this.gameObject);
     }
 }

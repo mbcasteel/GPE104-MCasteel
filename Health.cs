@@ -1,39 +1,81 @@
+using UnityEditor.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
-    public int maxHealth = 5;
-    public int currentHealth;
+    // Data (variables)
+    // Current Health
+   [SerializeField] private float currentHealth;
+    [SerializeField] private float maxHealth;
+    public Image healthBar;
 
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Start with max health!
         currentHealth = maxHealth;
+        UpdateUI();
     }
 
-    // This matches what your Meteor script calls:
-    public void TakeDamage(int damage, bool isInstantDeath)
+    // Update is called once per frame
+    void Update()
     {
-        if (isInstantDeath)
-        {
-            currentHealth = 0;
-            Debug.Log(gameObject.name + " was instantly destroyed!");
-        }
-        else
-        {
-            currentHealth -= damage;
-            Debug.Log(gameObject.name + " took " + damage + " damage. Health = " + currentHealth);
-        }
 
+    }
+    public void UpdateUI() 
+    { 
+        healthBar.fillAmount = currentHealth / maxHealth;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        Debug.Log(gameObject.name + "took damage");
+        currentHealth = currentHealth - damage;
+        UpdateUI();
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
-    void Die()
+    public void TakeDamage(float damage, Controller damageDealer)
     {
-        Debug.Log(gameObject.name + " has died!");
-        // You can add destroy logic, respawn, animation, etc.
-        Destroy(gameObject);
+        // TODO: Give points to the damage dealer for dealing damage
+        // For now, debug who did the damage
+        Debug.Log(damageDealer.gameObject.name + " did " + damage + " damage to " + this.gameObject.name);
+
+        // Actually take the damage
+        TakeDamage(damage);
     }
+
+    public void Heal(float healAmount)
+    {
+        currentHealth = currentHealth + healAmount;
+        UpdateUI();
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+    }
+
+    public void Die()
+    {
+        //Get the death component
+        Death deathComponent = GetComponent<Death>();
+
+        //Tell the death component to Die        
+        if (deathComponent != null)
+        {
+            deathComponent.Die();
+        }
+        else
+        {
+            Debug.LogWarning("Warning: " + gameObject.name + "has no death component.");
+        }
+    }
+
+
+
 }

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 27caf5cd63854544e9d3adfdf96f8345
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - seekerPrefab: {fileID: 3886724550427203146, guid: 2c2570e303c7fd84997dc9587095cfe8, type: 3}
+  - player: {instanceID: 0}
+  - waveText: {instanceID: 0}
+  - waveTextAnimator: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

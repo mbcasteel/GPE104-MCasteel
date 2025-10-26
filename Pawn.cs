@@ -1,97 +1,111 @@
-using JetBrains.Annotations;
-using UnityEngine;
-using UnityEngine.UIElements.Experimental;
+﻿using UnityEngine;
 
 public class Pawn : MonoBehaviour
 {
-    // Variable to hold the Transform component
-    private Transform tf;
-    // Variable to hold editable local movement (WASD) Unit per second
+    protected Transform tf;
+
+    [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    // Variable to hold editable World movement (Arrow Keys) Units per second
-    public float worldMoveSpeed = 5f;
-    // Variable to hold editable turbo speed
-    public float turboSpeed = 10f;
-    // Variable to hold degree rotation per frame
     public float rotateSpeed = 200f;
 
-    public float minX = -10f;
+    [Header("Turbo Settings")]
+    public float turboSpeedMultiplier = 2.5f; // how much faster during turbo
+    public float turboDuration = 1.5f;        // how long turbo lasts
+    public float turboCooldown = 3f;          // cooldown before next turbo
+    private bool isTurboActive = false;
+    private bool canTurbo = true;
 
-    public float maxX = 10f;
+    [Header("Teleport Settings")]
+    public Vector2 teleportBoundsMin = new Vector2(-10f, -5f);
+    public Vector2 teleportBoundsMax = new Vector2(10f, 5f);
 
-    public float minY = -5f;
+    [Header("Stats")]
+    public int lives = 3;
 
-    public float maxY = 5f;
-
-    // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
-        // Get the Transform component
-        tf = GetComponent<Transform>();
-        // Start at the world origin point (0,0,0)
-
-        tf.position = Vector3.zero;
-
-    }
-    // Local Movement (relative)
-    // Forward movement (Local) relative to the direction the object is facing
-    public void MoveForward()
-    {
-        tf.position += (tf.up * moveSpeed * Time.deltaTime);  
-    }
-    public void MoveBackward()
-    {
-        tf.position -= (tf.up * moveSpeed * Time.deltaTime);
-    }
-    // Rotate Left (Local) along Z axis
-
-
-
-    public void RotateLeft()
-    {
-        tf.Rotate(Vector3.forward, rotateSpeed * Time.deltaTime);
-    }
-    // Rotate Right (Local)
-    public void RotateRight()
-    {
-        tf.Rotate(tf.forward, -rotateSpeed * Time.deltaTime);
-        }
-    // World Movement (absolute)
-    // Slide forward
-    public void MoveUpWorld()
-    {
-        tf.position = tf.position + (Vector3.up * worldMoveSpeed * Time.deltaTime);
-    }
-    // Slide backward
-    public void MoveDownWorld()
-    {
-        tf.position = tf.position + (Vector3.down * worldMoveSpeed * Time.deltaTime);
-    }
-    // Strafe left
-    public void MoveLeftWorld()
-    {
-        tf.position = tf.position + (Vector3.left * worldMoveSpeed * Time.deltaTime);
-    }
-    // Strafe right
-    public void MoveRightWorld()
-    {
-        tf.position = tf.position + (Vector3.right * worldMoveSpeed * Time.deltaTime);
+        tf = transform;
     }
 
-    // Teleport to a random location within bounds  
-    public void TeleportRandom()
+    protected virtual void Update()
     {
-        // Generate random x and y coordinates within specified bounds
-        float randomX = Random.Range(minX, maxX);
-        float randomY = Random.Range(minY, maxY);
-        // Set the object's position to the new random coordinates
-        tf.position = new Vector3(randomX, randomY, 0);
-        // Console log for debugging
-        Debug.Log("Slingshot engaged!");
+        HandleInput();
     }
-    // Turbo forward movement (Local) relative to the direction the object is facing
-    public void MoveTurboForward()
+
+    private void HandleInput()
     {
-        tf.position = tf.position + (tf.up * turboSpeed * Time.deltaTime);
+        // 🕹️ Movement
+        if (Input.GetKey(KeyCode.W))
+            MoveForward();
+        if (Input.GetKey(KeyCode.S))
+            MoveBackward();
+        if (Input.GetKey(KeyCode.A))
+            RotateLeft();
+        if (Input.GetKey(KeyCode.D))
+            RotateRight();
+
+        // ⚡ Turbo Boost
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+            TryActivateTurbo();
+
+        // 🌀 Teleport
+        if (Input.GetKeyDown(KeyCode.T))
+            TeleportRandom();
+    }
+
+    public virtual void MoveForward()
+    {
+        tf.position += moveSpeed * Time.deltaTime * tf.up;
+    }
+
+    public virtual void MoveBackward()
+    {
+        tf.position -= moveSpeed * Time.deltaTime * tf.up;
+    }
+
+    public virtual void RotateLeft()
+    {
+        tf.Rotate(Vector3.forward * rotateSpeed * Time.deltaTime);
+    }
+
+    public virtual void RotateRight()
+    {
+        tf.Rotate(Vector3.back * rotateSpeed * Time.deltaTime);
+    }
+
+    // 🌀 Teleport to a random position
+    public virtual void TeleportRandom()
+    {
+        float randomX = Random.Range(teleportBoundsMin.x, teleportBoundsMax.x);
+        float randomY = Random.Range(teleportBoundsMin.y, teleportBoundsMax.y);
+        tf.position = new Vector3(randomX, randomY, tf.position.z);
+        Debug.Log($" {gameObject.name} teleported to ({randomX:F2}, {randomY:F2})");
+    }
+
+    // ⚡ Turbo Boost logic
+    private void TryActivateTurbo()
+    {
+        if (!canTurbo) return;
+        StartCoroutine(TurboRoutine());
+    }
+
+    private System.Collections.IEnumerator TurboRoutine()
+    {
+        canTurbo = false;
+        isTurboActive = true;
+        float originalSpeed = moveSpeed;
+
+        moveSpeed *= turboSpeedMultiplier;
+        Debug.Log(" Turbo boost activated!");
+
+        yield return new WaitForSeconds(turboDuration);
+
+        moveSpeed = originalSpeed;
+        isTurboActive = false;
+        Debug.Log("Turbo boost ended.");
+
+        yield return new WaitForSeconds(turboCooldown);
+        canTurbo = true;
+        Debug.Log(" Turbo boost ready again.");
     }
 }
