@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: c7a79ae1ea048424b9f4de91f49f396d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - worldSpaceCanvas: {instanceID: 0}
+  - healthFill: {instanceID: 0}
+  - explosionPrefab: {instanceID: 0}
+  - explosionSound: {instanceID: 0}
+  - audioSource: {instanceID: 0}
+  - fragmentPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: e07a3d62dd7a54d40a9166126757e71f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - playerPrefab: {fileID: 2898882043863194943, guid: c18c7c917cc273e49963f8da1295d753, type: 3}
+  - spawnPoint: {instanceID: 0}
+  - playerController: {instanceID: 0}
+  - gameOverUI: {instanceID: 0}
+  - gameplayUI: {instanceID: 0}
+  - mainMenuUI: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
